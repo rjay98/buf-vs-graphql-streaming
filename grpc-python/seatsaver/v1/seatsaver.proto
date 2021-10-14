@@ -1,0 +1,162 @@
+// related to graphql/dataManager/venue.js
+syntax = "proto3";
+
+package grpc.seatsaver.v1;
+
+option objc_class_prefix = "SEATSAVER";
+
+message Customer {
+    string first_name = 1;
+    string last_name = 2;
+    string email = 3;
+    string created = 4;
+    string message = 5;
+}
+
+// strongly typed - can defined enums here
+enum Status {
+    STATUS_RELEASING_UNSPECIFIED = 0;
+    STATUS_OPEN = 1;
+    STATUS_RESERVING = 2;
+    STATUS_RESERVED = 3;
+    STATUS_SELLING = 4;
+    STATUS_SOLD = 5;
+}
+
+message Seat {
+    string id = 1;
+    string number = 2;
+    string section = 3;
+    Status status = 4;
+    string changed = 5;
+    string created = 6;
+    Customer customer = 7;
+}
+
+message Venue {
+    string id = 1;
+    string name = 2;
+    string address = 3;
+    string city = 4;
+    string state_province = 5;
+    string postal_code = 6;
+    string country = 7;
+    string changed = 8;
+    string created = 9;
+    repeated string seats = 10;
+}
+
+message GetVenuesRequest {
+}
+
+message GetVenuesResponse {
+    Venue venue = 1;
+    string message = 2;
+}
+
+message GetVenueRequest {
+    string venue_id = 1;
+}
+
+message GetVenueResponse {
+    Venue venue = 1;
+    string message = 2;
+}
+
+message GetOpenSeatsRequest {
+    string venue_id = 1;
+}
+
+message GetOpenSeatsResponse {
+    string venue_id = 1;
+    Seat seat = 2;
+}
+
+message GetSoldSeatsRequest {
+    string venue_id = 1;
+}
+
+message GetSoldSeatsResponse {
+    string venue_id = 1;
+    Seat seat = 2;
+}
+
+message GetReservedSeatsRequest {
+    string venue_id = 1;
+}
+
+message GetReservedSeatsResponse {
+    string venue_id = 1;
+    Seat seat = 2;
+}
+
+message GetSeatsRequest {
+    string venue_id = 1;
+    string seat_id = 2;
+}
+
+message GetSeatsResponse {
+    string venue_id = 1;
+    Seat seat = 2;
+}
+
+message ReserveSeatRequest {
+    string venue_id = 1;
+    string seat_id = 2;
+}
+
+message ReserveSeatResponse {
+    string venue_id = 1;
+    Seat seat = 2;
+}
+
+message ReleaseSeatRequest {
+    string venue_id = 1;
+    string seat_id = 2;
+}
+
+message ReleaseSeatResponse {
+    string venue_id = 1;
+    Seat seat = 2;
+}
+
+message BuySeatRequest {
+    string venue_id = 1;
+    string seat_id = 2;
+}
+
+message BuySeatResponse {
+    string venue_id = 1;
+    Seat seat = 2;
+}
+
+message PingRequest {
+}
+
+message PingResponse {
+    string runtime_info = 1;
+    string message = 2;
+}
+
+message PingStreamRequest {
+    int32 stream_item_count = 1;
+}
+
+message PingStreamResponse {
+    string runtime_info = 1;
+    string message = 2;
+}
+
+service SeatSaverService {
+    rpc GetVenues (GetVenuesRequest) returns (stream GetVenuesResponse) {}
+    rpc GetVenue (GetVenueRequest) returns (GetVenueResponse) {}
+    rpc GetOpenSeats (GetOpenSeatsRequest) returns (stream GetOpenSeatsResponse) {}
+    rpc GetSoldSeats (GetSoldSeatsRequest) returns (stream GetSoldSeatsResponse) {}
+    rpc GetReservedSeats (GetReservedSeatsRequest) returns (stream GetReservedSeatsResponse) {}
+    rpc GetSeats (GetSeatsRequest) returns (stream GetSeatsResponse) {}
+    rpc ReserveSeat (ReserveSeatRequest) returns (ReserveSeatResponse) {}
+    rpc ReleaseSeat (ReleaseSeatRequest) returns (ReleaseSeatResponse) {}
+    rpc BuySeat (BuySeatRequest) returns (BuySeatResponse) {}
+    rpc Ping (PingRequest) returns (PingResponse) {}
+    rpc PingStream (PingStreamRequest) returns (stream PingStreamResponse) {}
+}
