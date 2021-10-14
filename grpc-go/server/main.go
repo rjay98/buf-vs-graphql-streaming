@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"strconv"
+	"sync"
 	"time"
 
 	// This import path is based on the name declaration in the go.mod,
@@ -29,12 +30,26 @@ func (s *seatSaverServiceServer) Ping(ctx context.Context, req *seatsaverv1.Ping
 }
 
 func (s *seatSaverServiceServer) PingStream(req *seatsaverv1.PingStreamRequest, srv seatsaverv1.SeatSaverService_PingStreamServer) error {
-	log.Println("Got ping server request")
-	response := &seatsaverv1.PingStreamResponse{
-		RuntimeInfo: strconv.FormatInt(time.Now().Unix(), 10),
-		Message:     "Ping successful",
+	var wg = &sync.WaitGroup{}
+	count := req.GetStreamItemCount()
+	log.Printf("Got ping stream server request for %v pings", count)
+	for i := 0; i < int(count); i++ {
+		wg.Add(1)
+		go func(jobnum int64) {
+			defer wg.Done()
+			//time sleep to simulate server process time
+			time.Sleep(time.Duration(jobnum) * time.Second)
+			response := seatsaverv1.PingStreamResponse{
+				RuntimeInfo: strconv.FormatInt(time.Now().Unix(), 10),
+				Message:     "Ping successful",
+			}
+			if err := srv.Send(&response); err != nil {
+				log.Printf("send error %v", err)
+			}
+			log.Printf("finishing request number : %d", jobnum)
+		}(int64(i))
 	}
-	srv.Send(response)
+	wg.Wait()
 	return nil
 }
 
