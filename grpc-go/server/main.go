@@ -10,7 +10,7 @@ import (
 
 	// This import path is based on the name declaration in the go.mod,
 	// and the gen/proto/go output location in the buf.gen.yaml.
-	seatsaverv1 "github.com/rjay98/buf-vs-graphql-streaming/seatsaver/gen/proto/go/v1"
+	seatsaverv1 "github.com/rjay98/buf-vs-graphql-streaming/grpc-go/seatsaver/gen/proto/go/v1"
 	"google.golang.org/grpc"
 )
 

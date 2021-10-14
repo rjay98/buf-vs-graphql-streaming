@@ -1,4 +1,4 @@
-module github.com/rjay98/buf-vs-graphql-streaming/seatsaver
+module github.com/rjay98/buf-vs-graphql-streaming/seatsaver/grpc-go
 
 go 1.17
 
